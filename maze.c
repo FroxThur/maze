@@ -1,3 +1,19 @@
+/*maze.c
+	author : FroxThur
+	date : 26/03/2017
+
+	this file contain every functions related to the maze.
+
+	In the main function, an exemple show how to use these functions.
+
+	Two main steps are executed : 
+		- 1 Maze creation
+		- 2 Solving the maze
+
+	*/
+
+
+/*personal includes*/
 #include "includes.h"
 
 
@@ -5,32 +21,41 @@
 
 int main(int argc, char const *argv[])
 {
+	/*Needed variables :
+		m_data is a boxes' array wich define the maze
+		start & exit are the coordinates of the start and the exit of the maze
+		m is the maze*/
+
 	box *m_data = NULL;
 	coord start, m_exit;
 	maze m;
 
+
 	srand(time(NULL));
 	
-	m_data = GennEmptyLaby();
-	
+	/*Grenerate an emty maze and display it*/
+	m_data = GennEmptyMaze();
 	DisplayMaze(m_data);
 	
+	/*Configure the start and the exit coordinates*/
 	start.x = 0;
 	start.y = 2;
 
 	m_exit.x = WIDTH_MAZE - 1;
 	m_exit.y = 3;
 
-	m = GenerateLaby(m_data, start, m_exit);
+	/*Generate the maze : connect randomly every boxes...*/
+	m = GenerateMaze(m_data, start, m_exit);
 
-	DisplayMaze(m.data);
-
-	SolveLabyRec(m, &(m_data[CoordToInd(start)]), NULL);
-	
-
+	/*... and display the result*/
 	DisplayMaze(m.data);
 
 
+	/*Solve the maze and display it*/
+	SolveMazeRec(m, &(m_data[CoordToInd(start)]), NULL);
+	DisplayMaze(m.data);
+
+	/*free the memory*/
 	free(m.data);
 
 	exit(EXIT_SUCCESS);
@@ -40,7 +65,7 @@ int main(int argc, char const *argv[])
 
 /*Solve the maze recursively*/
 
-int SolveLabyRec(maze m, box* current, box* previous){
+int SolveMazeRec(maze m, box* current, box* previous){
 
 	/*result : variable the show if the exit has been found (= 1 if found).
 		if the explored way result in a dead end, resut = 0*/
@@ -53,7 +78,7 @@ int SolveLabyRec(maze m, box* current, box* previous){
 	if (current == m.exit){
 		/*Either the exit has been found,  the function return 1*/
 		current->state = 1;
-		usleep(20000);
+		/*usleep(20000);*/
 		DisplayMaze(m.data);
 		return 1;
 	}
@@ -62,23 +87,39 @@ int SolveLabyRec(maze m, box* current, box* previous){
 		return 0;
 	}
 
+	/*In every test below, :
+		-	current->[Direction] > (box*)1 is equivallent to :
+			 current->[Direction] != NULL && current->[Direction] != 1
+			 if the direction pointer equal 1, it point to the outside of the maze,
+			 at the start box or at the exit one
+		-	previous == NULL 	=>	use for the first iteration of the function
+		-	current->[Direction] != previous	=>	Do not test the way to the previous box
+		-	!result	=>	if result == 1, the way to the exit has been found, it is useless to test other
+		possibilities*/
+
+
+	/*try the north way*/
 	if (current->North > (box*)1 && (previous == NULL || current->North != previous)){
 		/*printf("North\n");*/
-		result = SolveLabyRec(m, current->North, current);
+		result = SolveMazeRec(m, current->North, current);
 	}
+
+	/*try the south way*/
 	if (current->South > (box*)1 && (previous == NULL || current->South != previous) && !result){
 		/*printf("South\n");*/
-		result = SolveLabyRec(m, current->South, current);
+		result = SolveMazeRec(m, current->South, current);
 	}
 	if (current->East > (box*)1 && (previous == NULL || current->East != previous) && !result){
 		/*printf("East\n");*/
-		result = SolveLabyRec(m, current->East, current);
+		result = SolveMazeRec(m, current->East, current);
 	}
 	if (current->West > (box*)1 && (previous == NULL || current->West != previous) && !result){
 		/*printf("West\n");*/
-		result = SolveLabyRec(m, current->West, current);
+		result = SolveMazeRec(m, current->West, current);
 	}
 
+
+	/*If result == 1	switch the current box.state at 1 to indicate on the DisplayMaze function the way to the exit*/
 	if (result){
 		current->state = 1;
 		return 1;
@@ -107,7 +148,7 @@ int DeadEnd(box* current, box* previous){
 
 
 /*Generate an empy maze of size : WIDTH_MAZE * HEIGHT_MAZE*/
-box* GennEmptyLaby(void){
+box* GennEmptyMaze(void){
 	box b;
 
 	/*m_data is the maze data pointer*/
@@ -229,7 +270,7 @@ void Display4Boxes(box *m_data, coord c){
 /*Dislay the maze*/
 void DisplayMaze(box *m_data){
 	/*Clear the teminal*/
-	printf("\e[2J\e[1;1H");
+	/*printf("\e[2J\e[1;1H");*/
 	int i, j;
 
 	/*c is the temporary coordinate the travel all the maze*/
@@ -381,15 +422,16 @@ coord ConnectRandBox(box *m_data, coord init_box){
 
 }
 
+/*Generate a maze, for more details, see README part "functions explanation"*/
 
-maze GenerateLaby(box *m_data, coord start, coord exit){
+maze GenerateMaze(box *m_data, coord start, coord exit){
 
 	coord c1, c2;
 	maze result;
 
 	/*check arguments*/
 	if (m_data == NULL || !(TestSideBox(start) && TestSideBox(exit)))
-		fprintf(stderr, "%s\n", "Arguments error on GenerateLaby");
+		fprintf(stderr, "%s\n", "Arguments error on GenerateMaze");
 
 	/*create & initialize a stack*/
 	stack s;
@@ -415,7 +457,7 @@ maze GenerateLaby(box *m_data, coord start, coord exit){
 
 		/*display the maze and wait 0.2s*/
 		DisplayMaze(m_data);
-		usleep(20000);
+		/*usleep(20000);*/
 	}
 
 	InitBoxeStat(m_data);
