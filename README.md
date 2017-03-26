@@ -12,17 +12,7 @@ The maze is an array of boxes.
 
 Generate an empty maze : allocate memory and initialize every boxes :
 
- --- --- --- --- --- --- --- ---
-|   |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
-|   |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
-|   |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
-|   |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
-|   |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
+![empy_maze](README_images/empy_maze.png)
 
  # maze GenerateMaze(box *m_data, coord start, coord exit)
 
@@ -35,50 +25,15 @@ If no direction is possible (except going back) we are in a dead end. In this ca
 The figure below give an example of generation. The order is indicative and depends of
 Random choice of the directions.
 
-![GenerateMaze](GenerateMaze.png)
+![GenerateMaze](README_images/GenerateMaze.png)
 
 In the terminal, the first connection look like :
 
- --- --- --- --- --- --- --- ---
-|   |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
-| . |   |   |   |   |   |   |   |
-     --- --- --- --- --- --- ---
-| . |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
-|   |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
-|   |   |   |   |   |   |   |   |
- --- --- --- --- --- --- --- ---
+![first_connection](README_images/first_connection.png)
 
- After generating all the maze :
+And the after initialazing every boxes state to 0 and opening the start and exit boxes :
 
-  --- --- --- --- --- --- --- ---
-| .   .   . | .   .   .   .   . |
- ---         ---     --- ---    
-| .   . | .   . | .   . | .   . |
-     --- ---         ---        
-| . | .   . | . | . | .   . | . |
- ---             ---     ---    
-| .   . | .   . | .   . | .   . |
-     --- --- ---     ---     ---
-| .   .   .   .   . | .   .   . |
- --- --- --- --- --- --- --- ---
-
-
-And the finaly (after initalazing every boxes state to 0 and opening the start and exit boxes) :
-
-  --- --- --- --- --- --- --- ---
-|           |                   |
- ---         ---     --- ---    
-|       |       |       |       |
-     --- ---         ---        
-    |       |   |   |       |   |
- ---             ---     ---    
-|       |       |       |        
-     --- --- ---     ---     ---
-|                   |           |
- --- --- --- --- --- --- --- ---
+![generated_maze](README_images/generated_maze.png)
 
 
 # int SolveMazeRec(maze m, box* current, box* previous)
@@ -97,17 +52,7 @@ In the second condition, the current box go back from the dead end to the first 
 
 Solved maze :
 
- --- --- --- --- --- --- --- ---
-|     .   . |                   |
- ---         ---     --- ---    
-| .   . | .   . |       | .   . |
-     --- ---         ---        
-  . | .   . | . |   | .   . | . |
- ---             ---     ---    
-| .   . | .   . | .   . |     .  
-     --- --- ---     ---     ---
-| .   .   .   .   . |           |
- --- --- --- --- --- --- --- ---
+![maze_solved](README_images/maze_solved.png)
 
  ## Sources 
 
